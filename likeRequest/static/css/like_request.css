@@ -1,0 +1,187 @@
+@import url("https://fonts.googleapis.com/css2?family=Aclonica&display=swap");
+body {
+  margin: 0;
+  background-image: url(../images/bg.png);
+}
+
+body .left-col {
+  display: none;
+  background-color: #ECECEC;
+  height: 100vh;
+  -webkit-animation-name: moveInFromLeft;
+          animation-name: moveInFromLeft;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  -webkit-animation-duration: 0.2s;
+          animation-duration: 0.2s;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+}
+
+body .left-col nav ul {
+  margin: 30px 50px 0 50px;
+  padding: 0;
+}
+
+body .left-col nav ul .close-mobile-menu {
+  display: none;
+  position: absolute;
+  right: 30px;
+  cursor: pointer;
+}
+
+body .left-col nav ul .WebLogo {
+  width: 100%;
+}
+
+body .left-col nav ul li {
+  list-style-type: none;
+  margin-left: 40px;
+  font-family: Aclonica;
+  font-size: 1.4em;
+  margin-bottom: 1.1em;
+  cursor: pointer;
+}
+
+body .left-col nav ul li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+body .left-col nav ul li:hover {
+  background-color: #C8C8C8;
+  -webkit-transition: 300ms;
+  transition: 300ms;
+}
+
+body .left-col nav ul .currentPage {
+  color: #B0B0B0;
+}
+
+@-webkit-keyframes moveInFromLeft {
+  0% {
+    left: -500px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes moveInFromLeft {
+  0% {
+    left: -500px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+body .right-col {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 20px;
+}
+
+body .right-col .mobile-menu {
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  height: 1cm;
+  width: 1cm;
+}
+
+body .right-col .profilePicContainer {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  width: 100%;
+  padding: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+body .right-col .profilePicContainer img {
+  min-height: 100px;
+  min-width: 80px;
+  border-radius: 25%;
+  padding: 4%;
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 800px) {
+  body {
+    display: -ms-grid;
+    display: grid;
+  }
+  body .mobile-menu {
+    display: none;
+  }
+  body .left-col {
+    display: block;
+    height: 100vh;
+    width: 40%;
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+  body .right-col {
+    display: block;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    width: 60%;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  body .right-col .profilePicContainer {
+    margin: 20px;
+    width: auto;
+  }
+}
+
+.noLike{
+  border: solid 3px grey;
+  border-radius: 20px;
+  width: 100%;
+  font-size: 1.5em;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.likePanel{
+  border: solid 3px grey;
+  border-radius: 20px;
+  width: 100%;
+  display: flex;
+  height: 35vh;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.childAva{
+  width: 200px;
+  height: 200px;
+  margin: 0 15px;
+  object-fit: fill;
+  border-radius: 5px;
+}
+
+.childInfo{
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+/*# sourceMappingURL=like_request.css.map */

@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/your_profile.css' %}">
+    <title>Your profile</title>
+</head>
+<body onload="updateInfo()">
+
+    {% if messages %}
+    <div id="popup" class="messages" style="display:none;z-index:100;top:50%;left:50%;background-color:whitesmoke;width:fit-content;height:fit-content;padding:1em;border-radius:20px;border-width:5px;border-color:#ff3183;border-style:solid;transform:translate(-50%,-50%)">
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="font-size:1.8em" id="infoMessage">{{ message }}</p>
+        {% endfor %}
+        <button onclick="closePopup()">Confirm</button>
+    </div>
+    {% endif %}
+
+    <div class="left-col" id="menu-overlay">
+        <nav>
+            <ul>
+		    <img src="{% static 'images/exit.svg' %}" alt="Close mobile menu" class="close-mobile-menu" id="close-button">
+		    <img src="{% static 'images/WebLogo.svg' %}" alt="TinderPet" class="WebLogo">
+                <li><a href="/homepage">Home</a></li>
+                <li class="currentPage">Your profile</li>
+                <li><a href="/like_request">Like requests</a></li>
+                <li><a href="/my_messages">Messages</a></li>
+                <li><a href="/login">Sign out</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="right-col" id="right-col-js">
+	    <img src="{% static 'images/menu.svg' %}" alt="Open menu" class="mobile-menu" id="menu-button">
+
+        <h2>Profile picture</h2>
+        <div class="profilePicContainer">
+            <!-- <img src="{% static 'images/blankAva1.PNG' %}" alt="Profile1" class="profile1" id="profileAva"> -->
+            <img src="{{path}}" alt="Profile1" class="profile1" id="profileAva" style="width: 450px;height: 450px;border-radius: 20px; background-color: rgb(255, 197, 247); object-fit: cover;">
+        </div>
+
+        <!-- Information section -->
+        <!-- <form id="infoSection" action="homepage.html" method="get"></form> -->
+        <form id="infoSection" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="yourProfile">
+
+                {{ form.as_p }}
+                
+                <button type="submit" name="updateAva" value="updateAva">Upload avatar</button>
+            </div>
+        </form>
+
+
+        <form id="infoSection" method="post">
+            {% csrf_token %}
+
+            <div class="yourProfile">
+
+                <label for="displayName">Display name:</label>
+                <input type="text" name="displayName" id="displayName">
+            
+                <label for="age">Age:</label>
+                <input type="text" name="age" id="age">
+
+                <label for="species">Species:</label>
+                <input type="text" name="species" id="species">
+
+                <label for="breed">Breed:</label>
+                <input type="text" name="breed" id="breed">
+
+                <label for="gender">Gender:</label>
+                <input type="text" name="gender" id="gender">
+
+                <label for="trait">Trait:</label>
+                <input type="text" name="trait" id="trait">
+
+                <label for="location">Location:</label>
+                <input type="text" name="location" id="location">
+
+                <label for="bio">Bio:<label>
+                <input type="text" name="bio" id="bio">
+                
+                </textarea>
+                
+                <button type="submit" name="getInfo" value="getInfo">Save changes</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+<script>
+    //Menu button to open menu overlay from the left
+    document.getElementById('menu-button').addEventListener('click', openMenuOverlay, false);
+    //Close button to close the menu
+    document.getElementById('close-button').addEventListener('click', closeMenuOverlay, false);
+
+    function openMenuOverlay(){
+        document.getElementById("close-button").style.display="block";
+
+        // Display the menu
+        var menuOverlay = document.getElementById("menu-overlay");
+        menuOverlay.style.display="block";
+        menuOverlay.style.position="fixed";
+        menuOverlay.style.width="80%";
+    }
+
+    function closeMenuOverlay()
+    {
+        document.getElementById("menu-overlay").style.display="none";
+    }
+
+    function closePopup()
+    {
+        document.getElementById("popup").style.display="none";
+    }
+
+    function updateInfo()
+    {
+        var info = document.getElementById("infoMessage").innerHTML;
+        var myArr = info.split(":");
+
+        document.getElementById("displayName").value = myArr[0];
+        document.getElementById("age").value = myArr[1];
+        document.getElementById("species").value = myArr[2];
+        document.getElementById("breed").value = myArr[3];
+        document.getElementById("gender").value = myArr[4];
+        document.getElementById("trait").value = myArr[5];
+        document.getElementById("location").value = myArr[6];
+        document.getElementById("bio").value = myArr[7];
+    
+    }    
+
+    function checkPath()
+    {
+        var path = document.getElementById("uploadAva").value;
+        console.log(path);
+    }
+</script>
+
+</html>

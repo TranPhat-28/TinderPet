@@ -1,0 +1,185 @@
+@import url("https://fonts.googleapis.com/css2?family=Aclonica&display=swap");
+body {
+  background-image: url(../images/bg.png);
+  margin: 0;
+}
+
+body .left-col {
+  margin-top: 7em;
+}
+
+body .left-col .sub-headline {
+  font-family: Aclonica;
+  font-weight: 80;
+  color: #4f4f4f;
+  text-align: center;
+  padding: 0 2.4em;
+  margin-bottom: 0;
+}
+
+body .left-col .logo {
+  display: block;
+  margin: 0 auto;
+  max-width: 90%;
+  padding: 0 1em;
+}
+
+body .left-col .cta-button {
+  display: block;
+  background-color: #FF3183;
+  border-radius: 1em;
+  text-align: center;
+  font-family: Aclonica;
+  color: white;
+  font-weight: 50;
+  padding: .3em 0;
+  margin: 0 30%;
+}
+
+body .right-col {
+  margin-top: 4em;
+}
+
+body .right-col .hero {
+  max-width: 100%;
+  max-height: 40%;
+}
+
+body .cta-button:hover {
+  background-color: #b61656;
+  cursor: pointer;
+  -webkit-transition: 300ms;
+  transition: 300ms;
+}
+
+body form {
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  border: 2px solid #ECA1AB;
+  border-radius: 2em;
+  max-width: 260px;
+  width: 70%;
+  margin: 0 auto;
+  padding: 0em 0em 2em 0em;
+  background-color: white;
+  opacity: 1;
+  -webkit-animation-name: fadeInOpacity;
+          animation-name: fadeInOpacity;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease-in;
+          animation-timing-function: ease-in;
+  -webkit-animation-duration: 0.2s;
+          animation-duration: 0.2s;
+}
+
+body form .container .closeBtnContainer {
+  display: block;
+  height: 3em;
+  margin: 0;
+  padding-right: 1em;
+}
+
+body form .container .closeBtnContainer .close {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  text-align: right;
+}
+
+body form .container .closeBtnContainer .close:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+body form .container h2 {
+  text-align: center;
+  font-family: Aclonica;
+  font-weight: 100;
+}
+
+body form .container label {
+  display: block;
+  margin-left: 1.5em;
+}
+
+body form .container input {
+  display: block;
+  width: 82%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+
+body form .container button {
+  display: block;
+  background-color: #FF3183;
+  border-radius: 1em;
+  border: none;
+  text-align: center;
+  font-family: Aclonica;
+  color: white;
+  font-weight: 50;
+  width: 50%;
+  margin: 2em auto 0 auto;
+  padding: .3em 0;
+  -webkit-box-shadow: 5px 5px 10px #2e2e2e;
+          box-shadow: 5px 5px 10px #2e2e2e;
+}
+
+body form .container span {
+  display: block;
+  text-align: center;
+  width: 100%;
+  margin-top: 1.2em;
+}
+
+body form .container button:hover {
+  background-color: #b61656;
+  cursor: pointer;
+  -webkit-transition: 300ms;
+  transition: 300ms;
+}
+
+body form .container .linkText:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@-webkit-keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media only screen and (min-width: 900px) {
+  .opacity-filter {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+    height: 100vh;
+  }
+  .opacity-filter .left-col {
+    margin: auto auto;
+  }
+  .opacity-filter .right-col {
+    margin: auto auto;
+  }
+}
+/*# sourceMappingURL=login.css.map */

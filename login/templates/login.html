@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <title>Tinder: Pet edition</title>
+</head>
+
+<body>
+
+{% if messages %}
+<div id="popup" class="messages" style="position:fixed;top:50%;left:50%;background-color:whitesmoke;width:fit-content;height:fit-content;padding:1em;border-radius:20px;border-width:5px;border-color:#ff3183;border-style:solid;transform:translate(-50%,-50%)">
+    {% for message in messages %}
+    <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="font-size:1.8em">{{ message }}</p>
+    {% endfor %}
+    <button onclick="closePopup()">Confirm</button>
+</div>
+
+{% endif %}
+    <div class="opacity-filter" id="filter">
+        <div class="left-col">
+            <h5 class="sub-headline">Finding the right half for your pet has never been easier</h5>
+	    <img class="logo" src="{% static 'images/WebLogo.svg' %}" alt="Logo">
+            <span id="openOverlay" class="cta-button">Join now</span>
+        </div>
+
+        <div class="right-col">
+		<img class="hero" src="{% static 'images/welcome.png' %}" alt="welcome">
+        </div>
+    </div>
+
+
+
+
+    <!-- Login form--> 
+    <form id="loginForm"  method="post">
+	{% csrf_token %}
+        <div class="container">
+            <div class="closeBtnContainer">
+                <span class="close" id="closeLogin">X</span>
+            </div>
+
+            <h2>Login</h2>
+
+	    <label for="username">Username</label>
+	    <input type="text" name="username">
+
+	    <label for="password">Password</label>
+	    <input type="password" name="password">
+
+            <button type="submit" name="inputLogin" value="login">Login</button>
+            
+            <span class="linkText" id="swaptoSignup">Not a member? Sign up now</span>
+        </div>
+    </form>
+
+
+
+    <!-- Signup form-->
+    <!-- Fix method to POST later-->
+    <form id="signupForm" action="/login" method="post">
+	    {% csrf_token %}
+	    
+        <div class="container">
+            <div class="closeBtnContainer">
+                <span class="close" id="closeSignup">X</span>
+            </div>
+
+            <h2>Signup</h2>
+
+	    {{form.as_p}}
+	    
+            <button type="submit" name="inputSignup" value="signup">Signup</button>
+            
+            <span class="linkText" id="swaptoLogin">Already a member? Login now</span>
+        </div>
+    </form>
+
+    
+</body>
+
+<script>
+
+	function closePopup()
+	{
+			document.getElementById('popup').style.display="none";
+	}
+    // Join now button
+    document.getElementById('openOverlay').addEventListener('click', openLoginForm, false);
+
+    // Control on the Login form
+    // x button to close the form
+    document.getElementById('closeLogin').addEventListener('click', closeLoginForm, false);
+    // Swap to Signup form
+    document.getElementById('swaptoSignup').addEventListener('click', swapToSignupForm, false);
+
+    // Control on the Signup form
+    // x button to close the form
+    document.getElementById('closeSignup').addEventListener('click', closeSignupForm, false);
+    // Swap to Login form
+    document.getElementById('swaptoLogin').addEventListener('click', swapToLoginForm, false);
+
+
+    //----------------------------------------------------------------------------------------
+    // Join now button brings out the Login form
+    function openLoginForm()
+    {
+        document.getElementById('loginForm').style.display="block";
+        //document.getElementById('filter').style.backgroundColor="black";
+        //document.getElementById('filter').style.opacity="0.5";
+        document.getElementById('filter').style.transitionDuration="0.5s";
+    }
+
+    // Close Login form on (x) button clicked
+    function closeLoginForm()
+    {
+        document.getElementById('loginForm').style.display="none";
+        //document.getElementById('filter').style.backgroundColor="transparent";
+        //document.getElementById('filter').style.opacity="1";
+        document.getElementById('filter').style.transitionDuration="0.5s";
+    }
+
+    // Swap to Signup form
+    function swapToSignupForm()
+    {
+        document.getElementById('loginForm').style.display="none";
+        document.getElementById('signupForm').style.display="block";
+    }
+
+    // Close Signup form on (x) button clicked
+    function closeSignupForm()
+    {
+        document.getElementById('signupForm').style.display="none";
+        //document.getElementById('filter').style.backgroundColor="transparent";
+        //document.getElementById('filter').style.opacity="1";
+        document.getElementById('filter').style.transitionDuration="0.5s";
+    }
+
+    // Swap to Login form
+    function swapToLoginForm()
+    {
+        document.getElementById('signupForm').style.display="none";
+        document.getElementById('loginForm').style.display="block";
+    }
+</script>
+
+</html>

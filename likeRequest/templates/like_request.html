@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/like_request.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Like requests</title>
+</head>
+<body onload="loadLikeRequest()">
+    <div class="left-col" id="menu-overlay">
+        <nav>
+            <ul>
+                <img src="{% static 'images/exit.svg' %}" alt="Close mobile menu" class="close-mobile-menu" id="close-button">
+                <img src="{% static 'images/WebLogo.svg' %}" alt="TinderPet" class="WebLogo">
+                <li><a href="/homepage">Home</a></li>
+                <li><a href="/your_profile">Your profile</a></li>
+                <li class="currentPage">Like requests</li>
+                <li><a href="/my_messages">Messages</a></li>
+                <li><a href="/login">Sign out</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="right-col" id="right-col-js" style="display: grid; justify-items: center;">
+        <img src="{% static 'images/menu.svg' %}" alt="Open menu" class="mobile-menu" id="menu-button" style="justify-self: start;">
+            <div id="profileContainer" style="width: 90%; height: fit-content; display: grid; justify-items: center; padding-top: 30px">
+                <!--Handle the likes here-->
+            </div>
+    </div>
+</body>
+
+<script>
+    //Menu button to open menu overlay from the left
+    document.getElementById('menu-button').addEventListener('click', openMenuOverlay, false);
+    //Close button to close the menu
+    document.getElementById('close-button').addEventListener('click', closeMenuOverlay, false);
+
+
+    function openMenuOverlay(){
+        document.getElementById("close-button").style.display="block";
+
+        // Display the menu
+        var menuOverlay = document.getElementById("menu-overlay");
+        menuOverlay.style.display="block";
+        menuOverlay.style.position="fixed";
+        menuOverlay.style.width="80%";
+    }
+
+    function closeMenuOverlay()
+    {
+        document.getElementById("menu-overlay").style.display="none";
+    }
+
+    function loadLikeRequest()
+    {
+        let likeCount = "{{likeCount}}";            
+        if (likeCount == "0")
+        {
+            showNoLike();
+        }
+        else
+        {
+            showLikeRequest();
+        }
+    }
+
+    function showNoLike()
+    {
+        let profileContainer = document.getElementById('profileContainer');
+        //No like child div: create and style
+        const childDiv1 = document.createElement("div");
+        childDiv1.classList.add("noLike");
+
+        //Content to add to child
+        const newContent = document.createTextNode("Nobody sent you a like yet!");
+        const newContent2 = document.createElement("div");
+        newContent2.classList.add("far");
+        newContent2.classList.add("fa-sad-tear");
+        newContent2.classList.add("fa-2x");
+        //Add content to child
+        childDiv1.appendChild(newContent);
+        childDiv1.appendChild(newContent2);
+        //Add child to profileContainer
+        profileContainer.appendChild(childDiv1);
+    }
+
+    function showLikeRequest()
+    {
+        let profileContainer = document.getElementById('profileContainer');
+
+        let likeCount = "{{likeCount}}";        
+        let rawData = "{{data}}";
+
+        dataList = rawData.split('---');
+        for (let i = 0; i < likeCount; i++)
+        {
+            detailData = dataList[i].split(";");
+
+            //Child div: create and style
+            //This child div will have another 2 divs inside, 1 for ava, 1 for info
+            let childDiv = document.createElement("div");
+            childDiv.classList.add("likePanel");
+            
+            //Ava div
+            let avaDiv = document.createElement("img");
+            avaDiv.classList.add("childAva");
+            avaDiv.src=detailData[8];
+            
+            //Info div
+            let infoDiv = document.createElement("div");
+            infoDiv.classList.add("childInfo");
+
+            //Display information inside info div
+            let info1 = document.createElement("div");
+            info1.innerHTML=detailData[0] + ", " + detailData[1];
+            info1.style.fontWeight="bold";
+            info1.style.fontSize="1.5em";
+
+            let info2 = document.createElement("div");
+            info2.innerHTML="Species..: " + detailData[2];
+            
+            let info3 = document.createElement("div");
+            info3.innerHTML="Breed.....: " + detailData[3];
+
+            let info4 = document.createElement("div");
+            info4.innerHTML="Gender...: " + detailData[4];
+
+            let info5 = document.createElement("div");
+            info5.innerHTML="Trait.......: " + detailData[5];
+
+            let info6 = document.createElement("div");
+            info6.innerHTML="Location.: " + detailData[6];
+
+            let info7 = document.createElement("div");
+            info7.innerHTML="Bio..........: " + detailData[7];
+
+            infoDiv.appendChild(info1);
+            infoDiv.appendChild(info2);
+            infoDiv.appendChild(info3);
+            infoDiv.appendChild(info4);
+            infoDiv.appendChild(info5);
+            infoDiv.appendChild(info6);
+            infoDiv.appendChild(info7);
+
+            childDiv.appendChild(avaDiv);
+            childDiv.appendChild(infoDiv);
+            //Add child to profileContainer
+            profileContainer.appendChild(childDiv);
+        }
+    }
+</script>
+
+</html>

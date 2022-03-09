@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+    <title>Homepage</title>
+</head>
+<body onload="onloadFunction()">
+    {% if messages %}
+    <div id="popup" class="messages" style="position:fixed;top:50%;left:50%;background-color:whitesmoke;width:fit-content;height:fit-content;padding:1em;border-radius:20px;border-width:5px;border-color:#ff3183;border-style:solid;transform:translate(-50%,-50%)">
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="font-size:1.8em">{{ message }}</p>
+        {% endfor %}
+        <button onclick="closePopup()">Confirm</button>
+    </div>
+    {% endif %}
+
+	<img src="{% static 'images/menu.svg' %}" alt="Open menu" class="mobile-menu" id="menu-button" style="z-index: 100;">
+
+    <div class="left-col" id="menu-overlay">
+        <nav>
+            <ul>
+		    <img src="{% static 'images/exit.svg' %}" alt="Close mobile menu" class="close-mobile-menu" id="close-button" style="z-index: 100;">
+		    <img src="{% static 'images/WebLogo.svg' %}" alt="TinderPet" class="WebLogo">
+                <li class="currentPage">Home</li>
+                <li><a href="/your_profile">Your profile</a></li>
+                <li><a href="/like_request">Like requests</a></li>
+                <li><a href="/my_messages">Messages</a></li>
+                <li><a href="/login">Sign out</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="right-col" id="right-col-js" style="position: relative;">
+        <div class="before-info" id="before-info-js">
+            <div style="
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                padding: 20px;
+                margin: 0 auto 0 auto;
+                border: solid 1px grey;
+                border-radius: 10px;
+                height: 50vh;
+                width: 90%;">
+    
+                {% block content %}
+                <img src="{{ carx }}" alt="UnknownAvatar" id="avatar-js" style="width: 200px;height: 200px;border-radius: 20px; background-color: rgb(255, 197, 247);margin-left: 20px; margin-right: 30px;">
+                {% endblock %}
+                <div class="an">
+                    <span id="displayNameSpan" style="font-size: 1.5em; font-weight: bold; transition-duration: .5s;">Display name, age:</span><br>
+                    <span id="displaySpeciesSpan">Species..: </span><br>
+                    <span id="displayBreedSpan">Breed.....: </span><br>
+                    <span id="displayGenderSpan">Gender...: </span><br>             
+                    <span id="displayTraitSpan">Trait.......: </span><br>
+                    <span id="displayLocationSpan">Location.: </span><br>
+                    <span id="displayBioSpan">Bio..........: </span>
+                </div>
+            </div>
+        
+            <div class="action-bar">
+                <img src="{% static 'images/like-button.svg' %}" alt="Yes" class="likeButton" onclick="likeAndNext()">
+                <img src="{% static 'images/no-button.svg' %}" alt="Nope" class="noButton" id="nopeBTN" onclick="dislikeAndNext()">
+            </div>
+        </div>
+
+        <div id="nopePanel" style="width: 40%; height: 15vh; border: solid 5px rgb(241, 67, 67); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 20px; text-align: center; color:rgb(241, 67, 67); font-size: 3em; padding-top: 10px; opacity: 0; transition: linear .2s; background-color: aliceblue;">
+            NOPE
+        </div>
+
+        <div id="yesPanel" style="width: 40%; height: 15vh; border: solid 5px rgb(20, 156, 50); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 20px; text-align: center; color:rgb(20, 165, 50); font-size: 3em; padding-top: 10px; opacity: 0; transition: linear .2s; background-color: aliceblue;">
+            YES!
+        </div>
+
+        <div id="matchPanel" style="width: 40%; height: 15vh; border: solid 5px rgb(230, 90, 211); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 20px; text-align: center; color:rgb(230, 90, 211); font-size: 3em; padding-top: 10px; opacity: 0; transition: linear .2s; background-color: aliceblue;">
+            MATCH!!!
+        </div>
+    </div>
+</body>
+
+<script>
+    //Menu button to open menu overlay from the left
+    document.getElementById('menu-button').addEventListener('click', openMenuOverlay, false);
+    //Close button to close the menu
+    document.getElementById('close-button').addEventListener('click', closeMenuOverlay, false);
+
+
+    function openMenuOverlay(){
+        document.getElementById("close-button").style.display="block";
+
+        // Display the menu
+        var menuOverlay = document.getElementById("menu-overlay");
+        menuOverlay.style.display="block";
+        menuOverlay.style.position="fixed";
+        menuOverlay.style.width="80%";
+    }
+
+    function closeMenuOverlay()
+    {
+        document.getElementById("menu-overlay").style.display="none";
+    }
+
+    function closePopup()
+	{
+		document.getElementById('popup').style.display="none";
+	}
+
+    //For query User from database
+
+    var count = 1;
+    //Save the current user
+    var currentUsername = '';
+
+    //This will get the first user to display
+    function onloadFunction()
+    {
+        let firstUser = "{{ nextUser }}" + ", " + "{{nextAge}}";
+        let firstSpecies = "{{nextSpecies}}";
+        let firstBreed = "{{nextBreed}}";
+        let firstGender = "{{nextGender}}";
+        let firstTrait = "{{nextTrait}}";
+        let firstLocation = "{{nextLocation}}";
+        let firstBio = "{{nextBio}}";
+
+        document.getElementById("displayNameSpan").innerHTML=firstUser;
+        document.getElementById("displaySpeciesSpan").innerHTML+=firstSpecies;
+        document.getElementById("displayBreedSpan").innerHTML+=firstBreed;
+        document.getElementById("displayGenderSpan").innerHTML+=firstGender;
+        document.getElementById("displayTraitSpan").innerHTML+=firstTrait;
+        document.getElementById("displayLocationSpan").innerHTML+=firstLocation;
+        document.getElementById("displayBioSpan").innerHTML+=firstBio;
+        document.getElementById("avatar-js").src="{{avaPath}}"
+
+        currentUsername = "{{username}}"
+        console.log("current user: " + currentUsername);
+    }
+
+    //Press NOPE button
+    //Get next user
+    function dislikeAndNext()
+    {
+        document.getElementById("nopePanel").style.opacity=1;
+        
+        setTimeout(function(){ document.getElementById("nopePanel").style.opacity=0; }, 500);
+
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                if (xmlhttp.status == 200) {
+                    //Response text
+                    var nextUsername = xmlhttp.responseText;
+                    
+                    //JSON.Parse()
+                    var nextUsernameObject = JSON.parse(nextUsername);
+
+                    //Get the attributes and values
+                    var nextUsernameString = nextUsernameObject.nextUser;
+
+                    if (nextUsernameString != '')
+                    {
+                        //Display the data
+                        document.getElementById("displayNameSpan").innerHTML=nextUsernameString + ", " + nextUsernameObject.nextAge;
+                        document.getElementById("displaySpeciesSpan").innerHTML="Species..: " + nextUsernameObject.nextSpecies;
+                        document.getElementById("displayBreedSpan").innerHTML="Breed.....: " + nextUsernameObject.nextBreed;
+                        document.getElementById("displayGenderSpan").innerHTML="Gender...: " + nextUsernameObject.nextGender;
+                        document.getElementById("displayTraitSpan").innerHTML="Trait.......: " + nextUsernameObject.nextTrait;
+                        document.getElementById("displayLocationSpan").innerHTML="Location.: " + nextUsernameObject.nextLocation;
+                        document.getElementById("displayBioSpan").innerHTML="Bio..........: " + nextUsernameObject.nextBio;
+                        document.getElementById("avatar-js").src=nextUsernameObject.avaPath;
+
+                        //Update current user
+                        currentUsername = nextUsernameObject.username;
+                    }
+                    else{
+                        document.getElementById("displayNameSpan").innerText="No more profile to view ¯\\_(ツ)_/¯";
+                        document.getElementById("displaySpeciesSpan").innerHTML="Species..: ";
+                        document.getElementById("displayBreedSpan").innerHTML="Breed.....: ";
+                        document.getElementById("displayGenderSpan").innerHTML="Gender...: ";
+                        document.getElementById("displayTraitSpan").innerHTML="Trait.......: ";
+                        document.getElementById("displayLocationSpan").innerHTML="Location.: ";
+                        document.getElementById("displayBioSpan").innerHTML="Bio..........: ";
+                        document.getElementById("avatar-js").src="/static/images/blankAva1.PNG";
+
+                        //Update current user
+                        currentUsername = 'empty';
+                    }
+                    
+                    console.log("current user: " + currentUsername);
+                    count++;
+                    
+                }
+                else if (xmlhttp.status == 400) {
+                    console.log("Error 400");
+                }
+                else {
+                    console.log('something else other than 200 was returned');
+                }
+            }
+        };
+
+        xmlhttp.open("GET", "check/?current=" + count, true);
+        xmlhttp.send();
+    }
+
+
+    //Press LIKE button
+    
+    //Get next user
+    function likeAndNext()
+    {
+        var xmlhttp = new XMLHttpRequest();
+        
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                if (xmlhttp.status == 200) {
+                    //Response text
+                    var nextUsername = xmlhttp.responseText;
+                    
+                    //JSON.Parse()
+                    var nextUsernameObject = JSON.parse(nextUsername);
+
+                    //Get the attributes and values
+                    var nextUsernameString = nextUsernameObject.nextUser;
+
+                    if (nextUsernameString != '')
+                    {
+                        //Right panel to show
+                        if(nextUsernameObject.match == "yes")
+                        {
+                            console.log(nextUsernameObject.match + "Its a match");
+                            document.getElementById("matchPanel").style.opacity=1;
+                            setTimeout(function(){ document.getElementById("matchPanel").style.opacity=0; }, 2000);
+                        }
+                        else{
+                            console.log(nextUsernameObject.match + "Not a match just a like");
+                            document.getElementById("yesPanel").style.opacity=1;
+                            setTimeout(function(){ document.getElementById("yesPanel").style.opacity=0; }, 500);
+                        }
+                        
+                        //Display the data
+                        document.getElementById("displayNameSpan").innerHTML=nextUsernameString + ", " + nextUsernameObject.nextAge;
+                        document.getElementById("displaySpeciesSpan").innerHTML="Species..: " + nextUsernameObject.nextSpecies;
+                        document.getElementById("displayBreedSpan").innerHTML="Breed.....: " + nextUsernameObject.nextBreed;
+                        document.getElementById("displayGenderSpan").innerHTML="Gender...: " + nextUsernameObject.nextGender;
+                        document.getElementById("displayTraitSpan").innerHTML="Trait.......: " + nextUsernameObject.nextTrait;
+                        document.getElementById("displayLocationSpan").innerHTML="Location.: " + nextUsernameObject.nextLocation;
+                        document.getElementById("displayBioSpan").innerHTML="Bio..........: " + nextUsernameObject.nextBio;
+                        document.getElementById("avatar-js").src=nextUsernameObject.avaPath;
+
+                        //Update current user
+                        currentUsername = nextUsernameObject.username;
+                    }
+                    else{
+                        document.getElementById("displayNameSpan").innerText="No more profile to view ¯\\_(ツ)_/¯";
+                        document.getElementById("displaySpeciesSpan").innerHTML="Species..: ";
+                        document.getElementById("displayBreedSpan").innerHTML="Breed.....: ";
+                        document.getElementById("displayGenderSpan").innerHTML="Gender...: ";
+                        document.getElementById("displayTraitSpan").innerHTML="Trait.......: ";
+                        document.getElementById("displayLocationSpan").innerHTML="Location.: ";
+                        document.getElementById("displayBioSpan").innerHTML="Bio..........: ";
+                        document.getElementById("avatar-js").src="/static/images/blankAva1.PNG";
+
+                        //Update current user
+                        currentUsername = 'empty';
+                    }
+                    
+                    console.log("current user: " + currentUsername);
+                    count++;
+                    
+                }
+                else if (xmlhttp.status == 400) {
+                    console.log("Error 400");
+                }
+                else {
+                    console.log('something else other than 200 was returned');
+                }
+            }
+        };
+
+        //Who i liked
+        xmlhttp.open("GET", "like/?current=" + count + "&liked=" + currentUsername, true);
+        xmlhttp.send();
+    }
+</script>
+
+</html>

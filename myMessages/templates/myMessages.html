@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/myMessages.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Messages</title>
+</head>
+<body onload="onloadFunction()">
+    <div class="left-col" id="menu-overlay">
+        <nav>
+            <ul>
+                <img src="{% static 'images/exit.svg' %}" alt="Close mobile menu" class="close-mobile-menu" id="close-button">
+                <img src="{% static 'images/WebLogo.svg' %}" alt="TinderPet" class="WebLogo">
+                <li><a href="/homepage">Home</a></li>
+                <li><a href="/your_profile">Your profile</a></li>
+                <li><a href="/like_request">Like requests</a></li>
+                <li class="currentPage"><a href="./messages.html">Messages</a></li>
+                <li><a href="/login">Sign out</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div class="right-col" id="right-col-js">
+        <img src="{% static 'images/menu.svg' %}" alt="Open menu" class="mobile-menu" id="menu-button">
+        <div class="profilePicContainer">
+            <img src="{% static 'images/blankAva1.PNG' %}" alt="Profile1" class="profile1">
+            <div class="selectionDropdown">
+                <h3 style="display: block; width: 90%;">You can only message to people that you matched</h3>
+                <select id="friends" style="width: 90%;"></select>
+                <span style="margin-bottom: 10px;" onclick="fetchData()">GO</span>
+            </div>
+        </div>
+        <!--Message section-->
+        <div class="messageMainContainer">
+            <div class="messageSection" id="messageSection"></div>
+            <div class="inputSection" style="width: 100%; height: fit-content; display: flex; flex-direction: row; justify-content: space-between; padding: 6px; box-sizing: border-box;">
+                <input type="text" class="textInput" id="textInput"></input>
+                <span class="sendBtn fab fa-telegram-plane fa-2x" onclick="sendMsg()"></span>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    //Menu button to open menu overlay from the left
+    document.getElementById('menu-button').addEventListener('click', openMenuOverlay, false);
+    //Close button to close the menu
+    document.getElementById('close-button').addEventListener('click', closeMenuOverlay, false);
+
+
+    function openMenuOverlay(){
+        document.getElementById("close-button").style.display="block";
+
+        // Display the menu
+        var menuOverlay = document.getElementById("menu-overlay");
+        menuOverlay.style.display="block";
+        menuOverlay.style.position="fixed";
+        menuOverlay.style.width="80%";
+    }
+
+    function closeMenuOverlay()
+    {
+        document.getElementById("menu-overlay").style.display="none";
+    }
+
+    function closePopup()
+	{
+			document.getElementById('popup').style.display="none";
+	}
+
+    function onloadFunction(){
+        let matchKey = "{{matchKeys}}";
+        let dataString  = "{{displayName}}";
+        let dropdown = document.getElementById("friends");
+
+        let optionList = dataString.split(";");
+        for (let i = 0; i < optionList.length; i++)
+        {
+            let option = document.createElement("option");
+            option.text = optionList[i];
+            option.value = i;
+            dropdown.add(option);
+        }
+    }
+
+    //Click the GO button
+    function fetchData()
+    {
+        let dropdown = document.getElementById("friends");
+        let index = dropdown.options[dropdown.selectedIndex].value;
+
+        let matchKey2 = "{{matchKeys}}";
+        let matchKeyList = matchKey2.split(";");
+
+        let fetchMatchKey = matchKeyList[index];
+        dropdown.disabled=true;
+
+        let messageSection = document.getElementById("messageSection");
+        
+        //Now send the message
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                if (xmlhttp.status == 200) {
+                    //Response text
+                    var dataMsg = xmlhttp.responseText;
+                    var dataMsgObj = JSON.parse(dataMsg);
+                    let flagYourName = '--[[[' + dataMsgObj.yourName + ']]]--';
+                    let flagTheirName = '--[[[' + dataMsgObj.theirName + ']]]--';
+                    let allMsg = dataMsgObj.dataString.split(';');
+
+                    for (let i = 0; i < allMsg.length; i++)
+                    {
+                        let child = document.createElement("div");
+                        if (allMsg[i].includes(flagYourName) == true)
+                        {
+                            child.classList.add("messageContentContainerYou");
+                            child.innerHTML = allMsg[i].replace(flagYourName, '');
+                        }
+                        else
+                        {
+                            child.classList.add("messageContentContainerThem");
+                            child.innerHTML = allMsg[i].replace(flagTheirName, '');
+                        }
+                        messageSection.appendChild(child);
+                    }
+                }
+                else if (xmlhttp.status == 400) {
+                    console.log("Error 400");
+                }
+                else {
+                    console.log('something else other than 200 was returned');
+                }
+            }
+        };
+
+        xmlhttp.open("GET", "fetch/?matchKey=" + fetchMatchKey, true);
+        xmlhttp.send();
+    }
+
+    //Press send
+    function sendMsg()
+    {
+        let sendTextinput = document.getElementById("textInput");
+        let mess = sendTextinput.value;
+        let messageSec = document.getElementById("messageSection");
+
+        let dropdown = document.getElementById("friends");
+        let index = dropdown.options[dropdown.selectedIndex].value;
+
+        let matchKeyString = "{{matchKeys}}";
+        let matchKeyList = matchKeyString.split(";");
+        let matchKey = matchKeyList[index];
+        
+        
+        if(mess != '')
+        {
+            console.log(mess);
+            let childDiv = document.createElement("div");
+            childDiv.classList.add("messageContentContainerYou");
+            childDiv.innerHTML=mess;
+            messageSec.appendChild(childDiv);
+            messageSec.scrollTop = messageSec.scrollHeight;
+
+            //Now send the message
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                    if (xmlhttp.status == 200) {
+                        //Response text
+                        //var response = xmlhttp.responseText;
+                        console.log("200 OK");
+                    }
+                    else if (xmlhttp.status == 400) {
+                        console.log("Error 400");
+                    }
+                    else {
+                        console.log('something else other than 200 was returned');
+                    }
+                }
+            };
+
+            xmlhttp.open("GET", "send/?msg=" + mess + "&matchKey=" + matchKey, true);
+            xmlhttp.send();
+        }
+        else{
+            console.log("Dont send anything");
+        }
+
+        sendTextinput.value='';
+    }
+</script>
+
+</html>
